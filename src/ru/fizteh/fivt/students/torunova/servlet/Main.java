@@ -1,9 +1,8 @@
 package ru.fizteh.fivt.students.torunova.servlet;
 
-import ru.fizteh.fivt.students.torunova.servlet.database.Database;
-import ru.fizteh.fivt.students.torunova.servlet.database.DatabaseWrapper;
-import ru.fizteh.fivt.students.torunova.servlet.database.TableHolder;
-import ru.fizteh.fivt.students.torunova.servlet.database.actions.*;
+import ru.fizteh.fivt.students.torunova.servlet.database.actions.Action;
+import ru.fizteh.fivt.students.torunova.servlet.database.actions.Start;
+import ru.fizteh.fivt.students.torunova.servlet.database.actions.Stop;
 import ru.fizteh.fivt.students.torunova.servlet.database.exceptions.IncorrectDbException;
 import ru.fizteh.fivt.students.torunova.servlet.database.exceptions.IncorrectDbNameException;
 import ru.fizteh.fivt.students.torunova.servlet.database.exceptions.IncorrectFileException;
@@ -11,7 +10,6 @@ import ru.fizteh.fivt.students.torunova.servlet.database.exceptions.TableNotCrea
 import ru.fizteh.fivt.students.torunova.servlet.interpreter.Shell;
 import ru.fizteh.fivt.students.torunova.servlet.server.HttpServer;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,8 +29,8 @@ public class Main {
         HttpServer server = null;
         try {
             server = new HttpServer(System.getProperty(DATABASE_DIRECTORY));
-        } catch (IncorrectDbException | IncorrectDbNameException |
-                IncorrectFileException | TableNotCreatedException | IOException e) {
+        } catch (IncorrectDbException | IncorrectDbNameException
+                | IncorrectFileException | TableNotCreatedException | IOException e) {
             System.out.println(e.toString());
             System.exit(1);
         }

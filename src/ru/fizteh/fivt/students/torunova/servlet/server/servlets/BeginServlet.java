@@ -16,7 +16,9 @@ public class BeginServlet extends MainServlet {
         super(db);
     }
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
+            throws ServletException, IOException {
         String tableName = request.getParameter("table");
         Transaction transaction = null;
         try {

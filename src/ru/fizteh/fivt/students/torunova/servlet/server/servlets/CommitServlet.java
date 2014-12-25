@@ -16,7 +16,9 @@ public class CommitServlet extends MainServlet {
         super(db);
     }
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
+            throws ServletException, IOException {
         int transactionId = 0;
         try {
             transactionId = Integer.parseInt(request.getParameter("tid"));

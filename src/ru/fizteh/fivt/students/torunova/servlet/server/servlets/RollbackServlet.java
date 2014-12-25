@@ -17,7 +17,9 @@ public class RollbackServlet extends MainServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
+            throws ServletException, IOException {
         int transactionId = 0;
         try {
             transactionId = Integer.parseInt(request.getParameter("tid"));
