@@ -59,6 +59,9 @@ public class DatabaseWrapper implements TableProvider, AutoCloseable {
         readWriteLock.readLock().lock();
         try {
             TableImpl t = db.getTable(name);
+            if (t == null) {
+                return null;
+            }
             if (t.isClosed()) {
                 t.markAsOpened();
             }

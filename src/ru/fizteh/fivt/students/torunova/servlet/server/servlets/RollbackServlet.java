@@ -32,11 +32,9 @@ public class RollbackServlet extends MainServlet {
             response.sendError(BAD_REQUEST, "Transaction not found");
         }
         int numberOfRevertedChanges = 0;
-        try {
-            numberOfRevertedChanges = transaction.commit();
-        } catch (IOException e) {
-            response.sendError(SERVER_ERROR, "IOException occured.");
-        }
+
+        numberOfRevertedChanges = transaction.rollback();
+
         response.setStatus(OK);
         response.getWriter().write("diff = " + numberOfRevertedChanges);
     }

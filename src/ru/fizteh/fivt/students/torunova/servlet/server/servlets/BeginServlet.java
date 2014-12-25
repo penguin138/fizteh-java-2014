@@ -26,6 +26,10 @@ public class BeginServlet extends MainServlet {
         } catch (IllegalArgumentException e) {
             response.sendError(BAD_REQUEST, e.getMessage());
         }
+        if (transaction == null) {
+            response.sendError(BAD_REQUEST, "No such table.");
+
+        }
         response.setStatus(OK);
         response.getWriter().write("tid = " + transaction.getId());
     }

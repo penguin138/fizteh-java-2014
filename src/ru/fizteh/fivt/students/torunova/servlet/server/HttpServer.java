@@ -45,9 +45,6 @@ public class HttpServer {
         server.start();
     }
     public void stop() throws Exception {
-        if (!running) {
-            throw new IllegalStateException("Server has already stopped");
-        }
         Transaction[] transactions = db.getTransactions();
         for (Transaction transaction : transactions) {
             transaction.rollback();

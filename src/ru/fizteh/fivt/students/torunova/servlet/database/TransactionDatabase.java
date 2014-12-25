@@ -15,66 +15,76 @@ import java.util.*;
  */
 public class TransactionDatabase {
     private DatabaseWrapper innerDb;
-    class TransactionImpl implements Transaction{
+    class TransactionImpl implements Transaction {
         //Set<String> deletedKeys= new HashSet<>();
         Map<String, String> changedKeys = new HashMap<>();
         int transactionId;
+        String tableNameforSync;
         TableWrapper table;
+
         TransactionImpl(String tableName, int transactionId) {
             table = (TableWrapper) innerDb.getTable(tableName);
             this.transactionId = transactionId;
+            tableNameforSync = tableName.intern();
         }
+
         @Override
         public int getId() {
             return transactionId;
         }
+
         @Override
         public Storeable put(String key, Storeable value) {
-            synchronized (table) {
+            synchronized (tableNameforSync) {
                 apply();
                 Storeable result = table.put(key, value);
                 table.rollback();
                 changedKeys.put(key, innerDb.serialize(table, value));
-               // deletedKeys.remove(key);
+                // deletedKeys.remove(key);
                 return result;
             }
         }
+
         @Override
         public Storeable get(String key) {
-            synchronized (table) {
+            synchronized (tableNameforSync) {
                 apply();
                 Storeable result = table.get(key);
                 table.rollback();
                 return result;
             }
         }
+
         @Override
         public int size() {
-            synchronized (table) {
+            synchronized (tableNameforSync) {
                 apply();
                 int size = table.size();
                 table.rollback();
                 return size;
             }
         }
+
         @Override
         public int commit() throws IOException {
-            synchronized (table) {
+            synchronized (tableNameforSync) {
                 apply();
                 //deletedKeys.clear();
                 changedKeys.clear();
                 return table.commit();
             }
         }
+
         @Override
         public int rollback() {
-            synchronized (table) {
+            synchronized (tableNameforSync) {
                 apply();
                 //deletedKeys.clear();
                 changedKeys.clear();
                 return table.rollback();
             }
         }
+
         @Override
         public String serialize(Storeable value) {
             return innerDb.serialize(table, value);
@@ -90,7 +100,8 @@ public class TransactionDatabase {
             }
             return storeable;
         }
-        private void apply()  {
+
+        private void apply() {
             for (Map.Entry<String, String> entry : changedKeys.entrySet()) {
                 try {
                     table.put(entry.getKey(), innerDb.deserialize(table, entry.getValue()));
@@ -103,9 +114,6 @@ public class TransactionDatabase {
             }*/
         }
     }
-    /*it should be thread local,but there are some problems with it,
-    * so for now it is ordinary reference variable...it will be fixed soon.
-    * */
 
     private Map<Integer, TransactionImpl> transactions;
     private int numberOfTransactions;
@@ -129,6 +137,9 @@ public class TransactionDatabase {
             throw new IllegalArgumentException("Tablename shouldn't be null.");
         }
         TransactionImpl transaction = new TransactionImpl(tablename, ++numberOfTransactions);
+        if (transaction.table == null) {
+            return null;
+        }
         transactions.put(transaction.getId(), transaction);
         return transaction;
     }
